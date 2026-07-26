@@ -44,7 +44,13 @@ jobs:
       - name: Restore
         run: dotnet restore
 
-      - name: Verify formatting
+      - name: Restore formatting tool
+        run: dotnet tool restore
+
+      - name: Verify C# formatting
+        run: dotnet csharpier check src tests
+
+      - name: Verify compiler formatting
         run: dotnet format --verify-no-changes --no-restore
 
       - name: Build

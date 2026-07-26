@@ -30,3 +30,10 @@
 ## Next action
 
 - Push the current branch to run the corrected GitHub Actions workflow. For a public demo, deploy the existing Compose stack to a Docker-capable host and configure a DNS name/TLS reverse proxy.
+
+## Readability cleanup
+
+- Reformatted every C# source and project file with CSharpier instead of keeping multiple classes and methods on single lines.
+- Expanded JSON, XML, Docker Compose YAML, and migration SQL into conventional human-readable layouts.
+- Replaced terse API and worker local names with descriptive request, store, connection, delivery, status, and cancellation names.
+- Added a repository-local CSharpier tool manifest and CI formatting check so the readable layout remains enforced.

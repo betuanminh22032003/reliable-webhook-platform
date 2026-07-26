@@ -1,1 +1,14 @@
-<Solution><Folder Name="/src/"><Project Path="src/ReliableWebhook.Domain/ReliableWebhook.Domain.csproj"/><Project Path="src/ReliableWebhook.Application/ReliableWebhook.Application.csproj"/><Project Path="src/ReliableWebhook.Infrastructure/ReliableWebhook.Infrastructure.csproj"/><Project Path="src/ReliableWebhook.Api/ReliableWebhook.Api.csproj"/><Project Path="src/ReliableWebhook.Worker/ReliableWebhook.Worker.csproj"/></Folder><Folder Name="/tests/"><Project Path="tests/ReliableWebhook.UnitTests/ReliableWebhook.UnitTests.csproj"/><Project Path="tests/ReliableWebhook.IntegrationTests/ReliableWebhook.IntegrationTests.csproj"/></Folder></Solution>
+<?xml version="1.0" ?>
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ReliableWebhook.Domain/ReliableWebhook.Domain.csproj"/>
+    <Project Path="src/ReliableWebhook.Application/ReliableWebhook.Application.csproj"/>
+    <Project Path="src/ReliableWebhook.Infrastructure/ReliableWebhook.Infrastructure.csproj"/>
+    <Project Path="src/ReliableWebhook.Api/ReliableWebhook.Api.csproj"/>
+    <Project Path="src/ReliableWebhook.Worker/ReliableWebhook.Worker.csproj"/>
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ReliableWebhook.UnitTests/ReliableWebhook.UnitTests.csproj"/>
+    <Project Path="tests/ReliableWebhook.IntegrationTests/ReliableWebhook.IntegrationTests.csproj"/>
+  </Folder>
+</Solution>

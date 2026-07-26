@@ -15,12 +15,11 @@ public sealed class PostgresFixture : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
-        ConnectionString = Environment.GetEnvironmentVariable("TEST_POSTGRES_CONNECTION_STRING") ?? string.Empty;
+        ConnectionString =
+            Environment.GetEnvironmentVariable("TEST_POSTGRES_CONNECTION_STRING") ?? string.Empty;
         if (string.IsNullOrWhiteSpace(ConnectionString))
         {
-            container = new PostgreSqlBuilder("postgres:17-alpine")
-                .WithCleanUp(true)
-                .Build();
+            container = new PostgreSqlBuilder("postgres:17-alpine").WithCleanUp(true).Build();
             await container.StartAsync(TestContext.Current.CancellationToken);
             ConnectionString = container.GetConnectionString();
         }
@@ -34,7 +33,9 @@ public sealed class PostgresFixture : IAsyncLifetime
         const string sql = """
             TRUNCATE TABLE delivery_attempts, delivery_outbox, deliveries, webhook_events, webhook_endpoints CASCADE;
             """;
-        await using var connection = await DataSource.OpenConnectionAsync(TestContext.Current.CancellationToken);
+        await using var connection = await DataSource.OpenConnectionAsync(
+            TestContext.Current.CancellationToken
+        );
         await using var command = new NpgsqlCommand(sql, connection);
         await command.ExecuteNonQueryAsync(TestContext.Current.CancellationToken);
     }

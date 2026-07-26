@@ -28,13 +28,20 @@ public sealed class PostgresTests(PostgresFixture database) : IAsyncLifetime
     {
         var created = await store.CreateEndpointAsync(
             new CreateEndpoint("https://example.com/webhook", "1234567890123456"),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
-        var persisted = await store.GetEndpointAsync(created.Id, TestContext.Current.CancellationToken);
+        var persisted = await store.GetEndpointAsync(
+            created.Id,
+            TestContext.Current.CancellationToken
+        );
 
         Assert.NotNull(persisted);
         Assert.Equal(created.DestinationUrl, persisted.DestinationUrl);
-        Assert.DoesNotContain("Secret", persisted.GetType().GetProperties().Select(property => property.Name));
+        Assert.DoesNotContain(
+            "Secret",
+            persisted.GetType().GetProperties().Select(property => property.Name)
+        );
     }
 
     [Fact]
@@ -45,9 +52,18 @@ public sealed class PostgresTests(PostgresFixture database) : IAsyncLifetime
 
         var published = await store.PublishAsync(
             new PublishEvent("invoice.paid", payload.RootElement, null),
-            TestContext.Current.CancellationToken);
-        var deliveries = await store.GetDeliveriesAsync(published.Event.Id, TestContext.Current.CancellationToken);
-        var claimed = await store.ClaimAsync(10, TimeSpan.FromMinutes(1), 3, TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
+        var deliveries = await store.GetDeliveriesAsync(
+            published.Event.Id,
+            TestContext.Current.CancellationToken
+        );
+        var claimed = await store.ClaimAsync(
+            10,
+            TimeSpan.FromMinutes(1),
+            3,
+            TestContext.Current.CancellationToken
+        );
 
         Assert.False(published.IsDuplicate);
         Assert.Single(deliveries);
@@ -75,11 +91,15 @@ public sealed class PostgresTests(PostgresFixture database) : IAsyncLifetime
         using var changedPayload = JsonDocument.Parse("{\"value\":2}");
         await store.PublishAsync(
             new PublishEvent("thing.created", firstPayload.RootElement, "conflicting-key"),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
-        await Assert.ThrowsAsync<IdempotencyConflictException>(() => store.PublishAsync(
-            new PublishEvent("thing.created", changedPayload.RootElement, "conflicting-key"),
-            TestContext.Current.CancellationToken));
+        await Assert.ThrowsAsync<IdempotencyConflictException>(() =>
+            store.PublishAsync(
+                new PublishEvent("thing.created", changedPayload.RootElement, "conflicting-key"),
+                TestContext.Current.CancellationToken
+            )
+        );
     }
 
     [Fact]
@@ -87,11 +107,15 @@ public sealed class PostgresTests(PostgresFixture database) : IAsyncLifetime
     {
         await CreateEndpointAsync();
         using var payload = JsonDocument.Parse("{\"value\":1}");
-        await store.PublishAsync(new PublishEvent("thing.created", payload.RootElement, null), TestContext.Current.CancellationToken);
+        await store.PublishAsync(
+            new PublishEvent("thing.created", payload.RootElement, null),
+            TestContext.Current.CancellationToken
+        );
 
         var claims = await Task.WhenAll(
             store.ClaimAsync(1, TimeSpan.FromMinutes(1), 3, TestContext.Current.CancellationToken),
-            store.ClaimAsync(1, TimeSpan.FromMinutes(1), 3, TestContext.Current.CancellationToken));
+            store.ClaimAsync(1, TimeSpan.FromMinutes(1), 3, TestContext.Current.CancellationToken)
+        );
 
         Assert.Equal(1, claims.Sum(result => result.Count));
     }
@@ -101,11 +125,24 @@ public sealed class PostgresTests(PostgresFixture database) : IAsyncLifetime
     {
         await CreateEndpointAsync();
         using var payload = JsonDocument.Parse("{\"value\":1}");
-        var published = await store.PublishAsync(new PublishEvent("thing.created", payload.RootElement, null), TestContext.Current.CancellationToken);
-        var claimed = Assert.Single(await store.ClaimAsync(1, TimeSpan.FromMinutes(1), 3, TestContext.Current.CancellationToken));
+        var published = await store.PublishAsync(
+            new PublishEvent("thing.created", payload.RootElement, null),
+            TestContext.Current.CancellationToken
+        );
+        var claimed = Assert.Single(
+            await store.ClaimAsync(
+                1,
+                TimeSpan.FromMinutes(1),
+                3,
+                TestContext.Current.CancellationToken
+            )
+        );
 
         await store.CompleteAsync(claimed, 1, 204, 12, TestContext.Current.CancellationToken);
-        var detail = await store.GetDeliveryAsync(claimed.Id, TestContext.Current.CancellationToken);
+        var detail = await store.GetDeliveryAsync(
+            claimed.Id,
+            TestContext.Current.CancellationToken
+        );
 
         Assert.NotNull(detail);
         Assert.Equal(DeliveryStatus.Succeeded, detail.Value.Delivery.Status);
@@ -117,15 +154,25 @@ public sealed class PostgresTests(PostgresFixture database) : IAsyncLifetime
     [Fact]
     public async Task ApiEndpointCreationCoversHttpSurface()
     {
-        await using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-            builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemoryCollection(
-                new Dictionary<string, string?> { ["Database:ConnectionString"] = database.ConnectionString })));
+        await using var application = new WebApplicationFactory<Program>().WithWebHostBuilder(
+            builder =>
+                builder.ConfigureAppConfiguration(
+                    (_, configuration) =>
+                        configuration.AddInMemoryCollection(
+                            new Dictionary<string, string?>
+                            {
+                                ["Database:ConnectionString"] = database.ConnectionString,
+                            }
+                        )
+                )
+        );
         using var client = application.CreateClient();
 
         var response = await client.PostAsJsonAsync(
             "/api/webhook-endpoints",
             new CreateEndpoint("https://receiver.example/webhooks", "1234567890123456"),
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken
+        );
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -133,7 +180,9 @@ public sealed class PostgresTests(PostgresFixture database) : IAsyncLifetime
         Assert.Contains("1234567890123456", body);
     }
 
-    private Task<CreatedEndpoint> CreateEndpointAsync() => store.CreateEndpointAsync(
-        new CreateEndpoint("https://example.com/webhook", "1234567890123456"),
-        TestContext.Current.CancellationToken);
+    private Task<CreatedEndpoint> CreateEndpointAsync() =>
+        store.CreateEndpointAsync(
+            new CreateEndpoint("https://example.com/webhook", "1234567890123456"),
+            TestContext.Current.CancellationToken
+        );
 }
