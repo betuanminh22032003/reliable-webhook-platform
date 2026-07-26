@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+  <ItemGroup>
+    <ProjectReference Include="../ReliableWebhook.Application/ReliableWebhook.Application.csproj" />
+    <ProjectReference Include="../ReliableWebhook.Infrastructure/ReliableWebhook.Infrastructure.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.2" />
+  </ItemGroup>
+</Project>

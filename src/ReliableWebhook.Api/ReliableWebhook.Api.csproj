@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../ReliableWebhook.Application/ReliableWebhook.Application.csproj" />
+    <ProjectReference Include="../ReliableWebhook.Infrastructure/ReliableWebhook.Infrastructure.csproj" />
+    <PackageReference Include="Npgsql" Version="10.0.1" />
+  </ItemGroup>
+</Project>
