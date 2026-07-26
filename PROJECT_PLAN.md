@@ -29,12 +29,12 @@ docker compose config
 
 ## Definition of Done
 
-- [ ] All endpoint registration, publishing, inspection, health, and readiness routes work and validate input.
-- [ ] Versioned migrations provide keys, constraints, indexes, transactional outbox, and concurrency-safe claims.
-- [ ] Worker signs and sends deliveries, records attempts, retries failures, and terminally fails exhausted work.
-- [ ] Idempotency is database-enforced and concurrency-safe.
-- [ ] Unit and integration test suites pass, including API and real PostgreSQL coverage.
-- [ ] API and Worker start; Docker Compose validates and contains health checks.
-- [ ] CI, operational configuration, README, and five required ADRs are complete and accurate.
-- [ ] Mandatory restore, Release build, and Release test commands pass with no required TODOs or committed artifacts/secrets.
-- [ ] Final diff is reviewed and the implementation is committed.
+- [x] All endpoint registration, publishing, inspection, health, and readiness routes work and validate input.
+- [x] Versioned migrations provide keys, constraints, indexes, transactional outbox, and concurrency-safe claims.
+- [x] Worker signs and sends deliveries, records attempts, retries failures, and terminally fails exhausted work.
+- [x] Idempotency is database-enforced and concurrency-safe.
+- [x] Unit and integration test suites pass, including API and real PostgreSQL coverage.
+- [x] API and Worker start; Docker Compose validates and contains health checks.
+- [x] CI, operational configuration, README, and five required ADRs are complete and accurate.
+- [x] Mandatory restore, Release build, and Release test commands pass with no required TODOs or committed artifacts/secrets.
+- [x] Final diff is reviewed and the implementation is committed.

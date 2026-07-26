@@ -73,7 +73,7 @@ dotnet format --verify-no-changes
 docker compose config
 ```
 
-Integration tests start real ephemeral PostgreSQL containers and therefore require Docker.
+Integration tests use a real ephemeral PostgreSQL Testcontainer by default. CI supplies `TEST_POSTGRES_CONNECTION_STRING` for its healthy PostgreSQL service container; the same variable can target a disposable PostgreSQL database when Docker is unavailable.
 
 ## Guarantees, trade-offs, and failure modes
 
